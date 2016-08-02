@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Namey McSkyface</title>
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<style>
+	html {
+		height: 100%;
+		overflow: hidden;
+	}
+	body {
+		background: #499ab7;
+		background: -moz-linear-gradient(top,  #499ab7 0%, #60c4b8 55%, #b0d8bc 82%, #f1805e 83%, #d32f56 100%);
+		background: -webkit-linear-gradient(top,  #499ab7 0%,#60c4b8 55%,#b0d8bc 82%,#f1805e 83%,#d32f56 100%);
+		background: linear-gradient(to bottom,  #499ab7 0%,#60c4b8 55%,#b0d8bc 82%,#f1805e 83%,#d32f56 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#499ab7', endColorstr='#d32f56', GradientType=0);
+		color: #fff;
+		font-family: 'Montserrat', sans-serif;
+		font-size: 32px;
+		text-align: center;
+		height: 100%;
+	}
+	button {
+		background-color: #9bd3a9;
+		border: 0;
+		color: #2c7d99;
+		cursor: pointer;
+		font-family: 'Montserrat', sans-serif;
+		font-weight: normal;
+		padding: 0.5em 1em;
+		position: relative;
+		z-index: 2;
+	}
+	button:hover {
+		background-color: #d3f5d9;
+	}
+	button:active {
+		background-color: #fff;
+	}
+	#result {
+		margin-top: 4em;
+		margin-bottom: 2em;
+		position: relative;
+		text-shadow: 0 0 8px #499AB7;
+		z-index: 2;
+	}
+	#name {
+		bottom: 1em;
+		color: #fff;
+		display: block;
+		font-size: 10px;
+		position: fixed;
+		right: 1em;
+		text-align: right;
+		text-decoration: none;
+		width: 10em;
+	}
+	#name:hover {
+		text-decoration: underline;
+	}
+	.trail {
+		background: #ffffff;
+		background: -moz-linear-gradient(top, #ffffff 0%, #95d1bb 100%);
+		background: -webkit-linear-gradient(top, #ffffff 0%,#95d1bb 100%);
+		background: linear-gradient(to bottom, #ffffff 0%,#95d1bb 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#95d1bb', GradientType=0);
+		height: 40%;
+		left: 0;
+		opacity: 0.5;
+		position: absolute;
+		top: 0;
+		width: 3px;
+		z-index: 1;
+	}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+	var syllables = [
+		'a', 'am', 'ant', 'ar', 'at', 'bar', 'be', 'bi', 'boy', 'ci', 'co', 'da', 'der', 'er', 'de', 'em', 'er', 'fi',
+		'fo', 'fun', 'ga', 'gu', 'ho', 'hol', 'ing', 'is', 'ius', 'jay', 'ka', 'ke', 'kil', 'let', 'lov', 'mu', 'nak',
+		'nti', 'o', 'pe', 'phy', 'pro', 'qua', 'ru', 'ra', 'se', 'son', 'su', 'tat', 'ty', 'tur', 'ur', 'unt', 'us',
+		'van', 'vi', 'wa', 'y', 'ze'
+	];
+
+	var funnyPrefixes = [
+		'big', 'evil', 'fart', 'hairy', 'jangle', 'junk', 'master', 'mc', 'mini', 'nut', 'o\'', 'sir', 'uber', 'wet'
+	];
+
+	var funnyWords = [
+		'beer', 'bird', 'burp', 'butt', 'cat', 'cloud', 'crook', 'doge', 'dumb', 'dump', 'duck', 'finger', 'fudge',
+		'geek', 'goo', 'hype', 'jug', 'kappa', 'leg', 'marklar', 'muffit', 'piss', 'poop', 'sean', 'skank', 'slime',
+		'smell', 'smurf', 'snake', 'tit', 'turd', 'wangle', 'weed'
+	];
+
+	var funnySuffixes = [
+		'achu', 'acus', 'bag', 'bro', 'dink', 'dude', 'ella', 'er', 'face', 'fart', 'fork', 'gator', 'guy', 'head',
+		'ie', 'kid', 'lad', 'less', 'loaf', 'lord', 'itus', 'nado', 'nator', 'ness', 'opus', 'pants', 'pork', 'sack',
+		'saur', 'slack', 'slink', 'snort', 'son', 'ster', 'titis', 'toe', 'ton', 'train', 'troll', 'us', 'wack',
+		'wank', 'y'
+	];
+
+	var maxLength = 16;
+	var maxLengthRetries = 10;
+	var twoWordProbability = 0.2;
+	var hyphenProbability = 0.4;
+	var minSyllableCount = 2;
+	var maxSyllableCount = 4;
+	var funnyProbability = 0.25;
+	var funnyPrefixProbability = 0.7;
+	var funnyInfixProbability = 0.5;
+	var funnySuffixProbability = 0.7;
+
+	var capitalizeFirstLetter = function(string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	};
+
+	var hyphenate = function(string) {
+		if(string.length > 2) {
+			var duplicate = false;
+			var result = string.charAt(0);
+			for(var i = 1; i < string.length; i++) {
+				if(string.charAt(i).toUpperCase() == string.charAt(i - 1).toUpperCase()) {
+					if(duplicate) {
+						result += '-';
+					}
+					duplicate = !duplicate;
+				} else {
+					duplicate = false;
+				}
+				result += string.charAt(i);
+			}
+			return result;
+		}
+		return string;
+	}
+
+	var getRandomBool = function(trueProbability) {
+		return Math.random() <= trueProbability;
+	}
+
+	var getRandomNumberInRange = function(min, max) {
+		return min + Math.floor(Math.random() * (max - min + 1));
+	};
+
+	var getRandomArrayItem = function(array) {
+		return array[Math.floor(Math.random() * array.length)];
+	};
+
+	var getRandomSyllableCount = function() {
+		return getRandomNumberInRange(minSyllableCount, maxSyllableCount);
+	};
+
+	var getRandomWordCount = function() {
+		return getRandomBool(twoWordProbability) ? 2 : 1;
+	};
+
+	var getRandomSeparator = function() {
+		if(getRandomBool(hyphenProbability)) {
+			return '-';
+		} else {
+			return ' ';
+		}
+	}
+
+	var getRandomWord = function() {
+		var result = '';
+		var count = getRandomSyllableCount();
+		for(var i = 0; i < count; i++) {
+			result += getRandomArrayItem(syllables);
+		}
+		return capitalizeFirstLetter(hyphenate(result));
+	};
+
+	var getFunnyWord = function() {
+		var start = '';
+		var end = '';
+		var hasPrefix = false;
+		if(getRandomBool(funnyPrefixProbability)) {
+			start = getRandomArrayItem(funnyPrefixes);
+			hasPrefix = true;
+		}
+		if(getRandomBool(funnyInfixProbability)) {
+			end += getRandomArrayItem(syllables);
+		}
+		end += getRandomArrayItem(funnyWords);
+		if(getRandomBool(funnyInfixProbability)) {
+			end += getRandomArrayItem(syllables);
+		}
+		if(getRandomBool(funnySuffixProbability) || !hasPrefix) {
+			end += getRandomArrayItem(funnySuffixes);
+		}
+		if(getRandomBool(funnySuffixProbability)) {
+			end += getRandomArrayItem(funnySuffixes);
+		}
+		if(start == 'mc' || start == '\'o') {
+			end = capitalizeFirstLetter(end);
+		}
+		return capitalizeFirstLetter(hyphenate(start + end));
+	};
+
+	var getRandomName = function() {
+		var result = '';
+		var count = getRandomWordCount();
+		for(var i = 0; i < count; i++) {
+			if(getRandomBool(funnyProbability)) {
+				result += getFunnyWord() + getRandomSeparator();
+			} else {
+				result += getRandomWord() + getRandomSeparator();
+			}
+		}
+		return result.slice(0, -1);
+	};
+
+	var generate = function() {
+		var result = getRandomName();
+		for(var i = 0; i < maxLengthRetries; i++) {
+			if(result.length > maxLength) {
+				result = getRandomName();
+			} else {
+				break;
+			}
+		}
+		$('#result').text(result);
+	}
+
+	$(document).ready(function() {
+		generate();
+		$('#generate').click(function() {
+			generate();
+		});
+		$('#name').hover(function() {
+			$(this).text('Contribute!');
+		});
+		$('#name').mouseleave(function() {
+			$(this).text('Ádám Bodorkós');
+		});
+	});
+</script>
+</head>
+<body>
+	<div id="result">&nbsp;</div>
+	<a id="name" href="#">Ádám Bodorkós</a>
+	<button id="generate">Name it!</button>
+	<div class="trail" style="left: 17.50%; top:  6.88%"></div>
+	<div class="trail" style="left: 27.65%; top: 32.75%"></div>
+	<div class="trail" style="left: 34.00%; top: 21.15%"></div>
+	<div class="trail" style="left: 66.00%; top:  6.78%"></div>
+	<div class="trail" style="left: 71.56%; top: 29.06%"></div>
+	<div class="trail" style="left: 82.50%; top: 16.94%"></div>
+</body>
+</html>

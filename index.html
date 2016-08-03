@@ -85,27 +85,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript">
 	var syllables = [
-		'a', 'am', 'ant', 'ar', 'at', 'bar', 'be', 'bi', 'boy', 'ci', 'co', 'da', 'der', 'er', 'de', 'em', 'er', 'fi',
-		'fo', 'fun', 'ga', 'gle', 'gu', 'ho', 'hol', 'ing', 'is', 'ius', 'jay', 'ka', 'ke', 'kil', 'let', 'lov', 'mu',
-		'min', 'nak', 'nti', 'o', 'pe', 'phy', 'pro', 'qua', 'ru', 'ra', 'se', 'son', 'su', 'tat', 'ty', 'tur', 'ur',
-		'unt', 'us', 'van', 'vi', 'wa', 'y', 'ze'
+		'a', 'am', 'ant', 'ar', 'at', 'bar', 'be', 'bi', 'boy', 'ci', 'co', 'cis', 'da', 'der', 'er', 'de', 'em', 'er',
+		'fi', 'fo', 'fun', 'ga', 'gol', 'gle', 'gu', 'ho', 'hol', 'ing', 'is', 'ius', 'jay', 'jin', 'ka', 'ke', 'kil',
+		'ku', 'let', 'lov', 'min', 'mo', 'mu', 'nak', 'nti', 'o', 'pe', 'phy', 'pro', 'qua', 'ru', 'ra', 'se', 'son',
+		'su', 'tat', 'thu', 'ty', 'tur', 'ur', 'unt', 'us', 'van', 'vi', 'wa', 'y', 'yon', 'ze'
 	];
 
 	var funnyPrefixes = [
-		'big', 'evil', 'fart', 'hairy', 'jangle', 'junk', 'master', 'mc', 'mini', 'nut', 'o\'', 'sir', 'uber', 'wet'
+		'bad', 'big', 'cool', 'dumb', 'evil', 'fart', 'fat', 'hairy', 'jangle', 'junk', 'mad', 'master', 'mc', 'mini',
+		'nut', 'o\'', 'pig', 'silly', 'sir', 'slow', 'super', 'uber', 'wet', 'wild'
 	];
 
 	var funnyWords = [
-		'beer', 'bird', 'burp', 'butt', 'cat', 'cloud', 'crook', 'doge', 'dumb', 'dump', 'duck', 'finger', 'fudge',
-		'geek', 'goo', 'hype', 'jug', 'kappa', 'leg', 'marklar', 'muffit', 'piss', 'poop', 'sean', 'skank', 'slime',
-		'smell', 'smurf', 'snake', 'tit', 'turd', 'wangle', 'weed'
+		'alien', 'beer', 'bird', 'burp', 'butt', 'cat', 'cow', 'cloud', 'crook', 'doge', 'dumb', 'dump', 'duck',
+		'finger', 'fudge', 'geek', 'goo', 'hype', 'jug', 'kappa', 'leg', 'marklar', 'muffit', 'piss', 'poop', 'puke',
+		'sean', 'skank', 'slime', 'smell', 'smurf', 'snake', 'tit', 'turd', 'wangle', 'weed'
 	];
 
 	var funnySuffixes = [
-		'achu', 'acus', 'bag', 'bro', 'dink', 'dude', 'ella', 'er', 'face', 'fart', 'fork', 'gator', 'guy', 'head',
-		'ie', 'kid', 'lad', 'less', 'loaf', 'lord', 'itus', 'nado', 'nator', 'ness', 'opus', 'pants', 'pork', 'sack',
-		'saur', 'slack', 'slink', 'snort', 'son', 'ster', 'titis', 'toe', 'ton', 'train', 'troll', 'us', 'wack',
-		'wank', 'y'
+		'achu', 'acus', 'bag', 'bro', 'dink', 'dude', 'ella', 'er', 'face', 'fart', 'fork', 'freak', 'gator', 'guy',
+		'head', 'ie', 'ing', 'kid', 'lad', 'less', 'loaf', 'lord', 'itus', 'nado', 'nator', 'ness', 'on', 'opus',
+		'pants', 'pork', 'pot', 'sack', 'saur', 'slack', 'slink', 'snort', 'son', 'ster', 'ter', 'titis', 'toe', 'ton',
+		'train', 'troll', 'us', 'wack', 'wank', 'y'
 	];
 
 	var maxLength = 16;
